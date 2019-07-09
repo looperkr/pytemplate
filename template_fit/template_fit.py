@@ -12,6 +12,7 @@ Program iterates through values of the Z boson pT to perform momentum-binned fit
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
+import pandas as pd
 from ROOT import TFile, TH1D, TH2D
 from root_numpy import hist2array
 import os
@@ -64,9 +65,21 @@ hdata_numpy2D   = hist2array(hdata_2D,return_edges=True)
 #loop over Z momenta (pT)
 #for pt_bin in range(1,len(hlight_numpy2D[1][1])-1):
 #use 1-5 as a subsample for interview
+result_columns = ['pT','b-fraction','c-fraction','l-fraction']
+results = []
 for pt_bin in range(1,6):
+    bin_range = str(hdata_numpy2D[1][1][pt_bin]) + "--" + str(hdata_numpy2D[1][1][pt_bin+1])
     light_h = (hlight_numpy2D[0][:,pt_bin],hlight_numpy2D[1][0]) #Tuple with (bin_content,bin_edges)
     charm_h = (hcharm_numpy2D[0][:,pt_bin],hcharm_numpy2D[1][0])
     bottom_h =(hbottom_numpy2D[0][:,pt_bin],hbottom_numpy2D[1][0])
     data_h = (hdata_numpy2D[0][:,pt_bin],hdata_numpy2D[1][0])
-    run_fit(bottom_h,charm_h,light_h,data_h) #performs least squares fit of data to sum of templates, returns [b_frac,c_frac]
+    params = run_fit(bottom_h,charm_h,light_h,data_h) #performs least squares fit of data to sum of templates, returns [b_frac,c_frac,l_frac]
+    params.insert(0,bin_range)
+    results.append(params)
+
+resultsdf = pd.DataFrame(results, columns = result_columns)
+resultsdf.set_index('pT',drop=True,inplace=True)
+ax = resultsdf.plot(style='.-')
+ax.set_ylabel('Fraction')
+ax.set_xlabel(r'$Z\,p_\mathrm{T}$ [GeV]')
+plt.show()
