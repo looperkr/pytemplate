@@ -18,6 +18,7 @@ def run_fit(b_array,c_array,l_array,data):
     ax1=fig.add_subplot(2,1,1)
     plt.yscale('log')
     ax2=fig.add_subplot(2,1,2, sharex=ax1)
+    fig.subplots_adjust(hspace=.5)
     plt.yscale('log')
     ax1.set_title('Distributions before fitting')
     ax1.set_xlabel('Neural net weight')
