@@ -1,7 +1,14 @@
 #
 #template_fit_py/template_fit/template_fit.py
 #
+"""
+Main program to run the analysis: uses processed Monte Carlo distributions as templates (PDFs)
+to be fit to the data distribution. Each template corresponds to a jet flavor (bottom, charm,
+light). x-axis values are output weights from the MV1c algorithm.
 
+Program iterates through values of the Z boson pT to perform momentum-binned fits
+
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy
